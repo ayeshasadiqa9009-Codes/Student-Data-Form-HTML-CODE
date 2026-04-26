@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #f0f4f8;
+      --surface: #ffffff;
+      --accent:  #2d6a4f;
+      --accent2: #52b788;
+      --text:    #1b2a22;
+      --muted:   #5a7367;
+      --border:  #c8ddd4;
+      --light:   #dceee6;
+      --radius:  14px;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(82,183,136,0.14) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(45,106,79,0.10) 0%, transparent 50%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    /* drifting background orb */
+    body::after {
+      content: '';
+      position: fixed;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(82,183,136,0.08) 0%, transparent 70%);
+      top: -150px; right: -150px;
+      animation: blobDrift 12s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes blobDrift {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(40px,60px) scale(1.1); }
+    }
+
+    /* ── Wrapper entrance ── */
+    .wrapper {
+      width: 100%;
+      max-width: 640px;
+      animation: slideUp 0.7s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 60%, #40916c 100%);
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 32px 40px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* shimmer sweep */
+    .header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.07) 50%, transparent 60%);
+      background-size: 200% 100%;
+      animation: shimmer 3.5s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* pulsing ring */
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -20px;
+      width: 160px; height: 160px;
+      border: 30px solid rgba(82,183,136,0.15);
+      border-radius: 50%;
+      animation: ringPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes ringPulse {
+      0%,100% { transform: scale(1);   opacity: 1; }
+      50%      { transform: scale(1.1); opacity: 0.5; }
+    }
+
+    .uni-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 8px;
+      animation: fadeIn 0.6s 0.3s both;
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 6px;
+      animation: fadeIn 0.6s 0.4s both;
+    }
+
+    .header p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      font-weight: 300;
+      animation: fadeIn 0.6s 0.5s both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+      padding: 36px 40px 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.10);
+    }
+
+    /* ── Section title with animated underline ── */
+    .section-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 28px 0 20px;
+    }
+
+    .section-title:first-child { margin-top: 0; }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--light);
+      transform-origin: left;
+      animation: lineGrow 0.7s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @keyframes lineGrow {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+
+    /* ── Grid ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 500px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .card, .header { padding-left: 24px; padding-right: 24px; }
+    }
+
+    /* ── Fields — staggered entrance ── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      opacity: 0;
+      animation: fieldIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    .field:nth-child(1) { animation-delay: 0.55s; }
+    .field:nth-child(2) { animation-delay: 0.63s; }
+    .field:nth-child(3) { animation-delay: 0.71s; }
+    .field:nth-child(4) { animation-delay: 0.79s; }
+    .field:nth-child(5) { animation-delay: 0.87s; }
+    .field:nth-child(6) { animation-delay: 0.95s; }
+
+    @keyframes fieldIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    /* label floats green when field is active */
+    .field:focus-within > label { color: var(--accent); }
+
+    label .required { color: var(--accent2); margin-left: 2px; }
+
+    /* ── Inputs ── */
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 11px 14px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s, transform 0.18s;
+      appearance: none;
+    }
+
+    input::placeholder { color: #bbb; }
+
+    input:hover:not(:focus),
+    select:hover:not(:focus) { border-color: var(--accent2); }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(45,106,79,0.12);
+      transform: translateY(-1px);
+    }
+
+    /* ── Select ── */
+    .select-wrap { position: relative; }
+
+    .select-wrap::after {
+      content: '▾';
+      position: absolute;
+      right: 13px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+      font-size: 13px;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .select-wrap:focus-within::after {
+      color: var(--accent);
+      transform: translateY(-50%) rotate(180deg);
+    }
+
+    select { cursor: pointer; padding-right: 32px; }
+
+    /* ── Radio ── */
+    .radio-group { display: flex; gap: 12px; }
+    .radio-option { flex: 1; position: relative; }
+
+    .radio-option input[type="radio"] {
+      position: absolute;
+      opacity: 0; width: 0; height: 0;
+    }
+
+    .radio-option label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 14px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: none;
+      letter-spacing: 0;
+      transition: all 0.22s;
+      user-select: none;
+    }
+
+    .radio-option label:hover {
+      border-color: var(--accent2);
+      background: rgba(82,183,136,0.05);
+      transform: translateY(-1px);
+    }
+
+    .radio-option label .dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      transition: all 0.28s cubic-bezier(0.34,1.56,0.64,1);
+      flex-shrink: 0;
+      background: #fff;
+    }
+
+    .radio-option input:checked + label {
+      background: rgba(45,106,79,0.07);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .radio-option input:checked + label .dot {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: inset 0 0 0 3px #fff;
+      transform: scale(1.2);
+    }
+
+    /* ── Buttons ── */
+    .btn-row {
+      margin-top: 32px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      opacity: 0;
+      animation: fieldIn 0.5s 1.05s forwards;
+    }
+
+    .btn-submit {
+      flex: 1;
+      padding: 14px 24px;
+      background: var(--accent);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.18s, box-shadow 0.22s;
+      box-shadow: 0 4px 20px rgba(45,106,79,0.28);
+    }
+
+    /* inner shine */
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* ripple layer */
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.28) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .btn-submit:active::before { opacity: 1; }
+
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(45,106,79,0.38);
+    }
+
+    .btn-submit:active { transform: translateY(0); }
+
+    .btn-submit .arrow {
+      display: inline-block;
+      margin-left: 4px;
+      transition: transform 0.22s;
+    }
+
+    .btn-submit:hover .arrow { transform: translateX(5px); }
+
+    /* success pulse */
+    @keyframes successPulse {
+      0%   { box-shadow: 0 0 0 0   rgba(82,183,136,0.55); }
+      70%  { box-shadow: 0 0 0 14px rgba(82,183,136,0); }
+      100% { box-shadow: 0 0 0 0   rgba(82,183,136,0); }
+    }
+
+    .btn-submit.pulsed { animation: successPulse 0.65s ease-out; }
+
+    .btn-reset {
+      padding: 14px 20px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-reset:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* ── Note ── */
+    .form-note {
+      margin-top: 20px;
+      padding: 12px 16px;
+      background: rgba(82,183,136,0.08);
+      border-left: 3px solid var(--accent2);
+      border-radius: 0 6px 6px 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      opacity: 0;
+      animation: fieldIn 0.5s 1.15s forwards;
+    }
+
+    .form-note strong { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <div class="header">
+    <div class="uni-label">Database Management Systems</div>
+    <h1>Student Registration Form</h1>
+    <p>Student Result Management System — Data Entry</p>
+  </div>
+
+  <div class="card">
+    <form name="student_registration" onsubmit="return false;">
+
+      <div class="section-title">Personal Information</div>
+
+      <div class="grid-2">
+        <div class="field full">
+          <label for="name">Full Name <span class="required">*</span></label>
+          <input type="text" id="name" name="name" placeholder="e.g. Muhammad Ali Khan" required>
+        </div>
+
+        <div class="field">
+          <label for="roll_no">Roll Number <span class="required">*</span></label>
+          <input type="text" id="roll_no" name="roll_no" placeholder="e.g. 2023-CS-001" required>
+        </div>
+
+        <div class="field">
+          <label for="dob">Date of Birth</label>
+          <input type="date" id="dob" name="dob">
+        </div>
+
+        <div class="field full">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="student@university.edu.pk">
+        </div>
+      </div>
+
+      <div class="section-title">Academic Information</div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="program">Program <span class="required">*</span></label>
+          <div class="select-wrap">
+            <select id="program" name="program" required>
+              <option value="" disabled selected>Select program…</option>
+              <option value="BS-CS">BS-CS — Computer Science</option>
+              <option value="BS-SE">BS-SE — Software Engineering</option>
+              <option value="BS-IT">BS-IT — Information Technology</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Student Type <span class="required">*</span></label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" id="full_time" name="type" value="full" required>
+              <label for="full_time"><span class="dot"></span>Full-Time</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="part_time" name="type" value="part">
+              <label for="part_time"><span class="dot"></span>Part-Time</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="submit" class="btn-submit" id="submitBtn">
+          Register Student <span class="arrow">→</span>
+        </button>
+        <button type="reset" class="btn-reset">Clear</button>
+      </div>
+
+     
+    </form>
+  </div>
+
+</div>
+
+<script>
+  document.getElementById('submitBtn').addEventListener('click', function () {
+    this.classList.remove('pulsed');
+    void this.offsetWidth;
+    this.classList.add('pulsed');
+  });
+</script>
+
+</body>
+</html>
